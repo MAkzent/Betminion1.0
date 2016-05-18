@@ -1,0 +1,12 @@
+.DS_STORE
+*.pyc
+src/config/config.py
+globals.py
+*.db
+*.db-journal
+*.json
+*.pkl
+log/*
+src/lib/trivia/*
+src/logs/*
+venv/*
