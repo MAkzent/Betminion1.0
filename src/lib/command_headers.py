@@ -165,7 +165,22 @@ commands = {
         'return': 'command',
         'usage': '!hosts',
         'argc': 0
-    }
+    },
+    
+    
+    '!points': {
+        'limit': 0,
+        'return': 'command',
+        'user_limit': 20,
+        'usage': '!points'
+    },
+    
+    '!help': {
+        'limit': 0,
+        'return': "This is a help command",
+        'user_limit': 20,
+        'usage': '!help'
+    },
 }
 
 user_cooldowns = {"channels": {}}

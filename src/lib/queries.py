@@ -278,7 +278,16 @@ class Database:
             cur.execute("""
                 DELETE FROM channel_data WHERE channel = ? AND data_type = ?;
                 """, [channel, data_type])
-
+                
+    def get_points(self, channel, username):
+        with self.con:
+            cur = self.con.cursor()
+            cur.execute("""
+            SELECT points FROM users
+            WHERE username = ? AND channel = ?;
+            """, [channel, username])
+            points = cur.fetchone()
+            return points
 
 if __name__ == "__main__":
     channel = "testchannel"

@@ -169,7 +169,7 @@ straight and is getting {2} cash!".format(subbed_user, months_subbed, points)
         cmd_return = commands.get_return(command)
         if cmd_return != "command":
             # it's a return = "some message here" kind of function
-            resp = '(%s) : %s' % (username, cmd_return)
+            resp = '/w %s %s' % (username, cmd_return)
             commands.update_last_used(command, channel)
             self.irc.send_message(channel, resp)
             return
