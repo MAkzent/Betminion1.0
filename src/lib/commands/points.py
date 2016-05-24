@@ -7,7 +7,6 @@ def points():
     db = Database()
     try:
         points = int(db.get_points(channel, username)[0])
-        print type(points)
     except Exception as error:
         print error
         return "Couldn't show your points, sorry!"

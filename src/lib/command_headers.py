@@ -177,9 +177,57 @@ commands = {
     
     '!help': {
         'limit': 0,
-        'return': "This is a help command",
+        'return': "Lorem Ipsum",
         'user_limit': 20,
         'usage': '!help'
+    },
+    
+    '!start': {
+        'limit': 0,
+        'return': 'command',
+        'user_limit': 20,
+        'usage': '!start',
+        'ul': 'mod'
+    },
+    
+    '!stop': {
+        'limit': 0,
+        'return': 'command',
+        'user_limit': 20,
+        'usage': '!stop',
+        'ul': 'mod'
+    },
+    
+    '!outcome': {
+        'limit': 0,
+        'return': 'command',
+        'user_limit': 20,
+        'usage': '!outcome [win/lose]',
+        'ul': 'mod',
+        'argc': 1
+    },
+    
+    '!win': {
+        'limit': 0,
+        'return': 'command',
+        'user_limit': 20,
+        'usage': '!!win [amount] or !win [amount_in_percents]%',
+        'argc': 1
+    },
+    
+    '!lose': {
+        'limit': 0,
+        'return': 'command',
+        'user_limit': 20,
+        'usage': '!lose [amount] or !lose [amount_in_percents]%',
+        'argc': 1
+    },
+    
+    '!result': {
+        'limit': 0,
+        'return': 'command',
+        'user_limit': 20,
+        'usage': '!result'
     },
 }
 

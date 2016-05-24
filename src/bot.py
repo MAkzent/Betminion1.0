@@ -102,13 +102,19 @@ straight and is getting {2} cash!".format(subbed_user, months_subbed, points)
         while True:
             try:
                 data = self.irc.nextMessage()
-                if not self.irc.check_for_message(data):
+                if self.irc.check_for_message(data):
+                    message_dict = self.irc.get_message(data)
+                    channel = message_dict['channel']
+                    message = message_dict['message']  # .lower()
+                    username = message_dict['username']
+                elif self.irc.check_for_whisper(data):
+                    message_dict = self.irc.get_whisper(data)
+                    channel = self.irc.config["channels"][0]
+                    message = message_dict['message']  # .lower()
+                    username = message_dict['username']
+                else:
                     continue
-                message_dict = self.irc.get_message(data)
-                channel = message_dict['channel']
                 globals.CURRENT_CHANNEL = channel.lstrip('#')
-                message = message_dict['message']  # .lower()
-                username = message_dict['username']
                 globals.CURRENT_USER = username
                 chan = channel.lstrip("#")
                 if message[0] == "!":
@@ -156,10 +162,10 @@ straight and is getting {2} cash!".format(subbed_user, months_subbed, points)
             return
         if commands.check_has_user_cooldown(command):
             if commands.is_on_user_cooldown(command, channel, username):
-                resp = "Sorry! You've got " + str(
+                resp = "/w " + username + " Sorry! You've got " + str(
                     commands.get_user_cooldown_remaining(
                         command, channel, username)) + \
-                    " seconds before you can do that again, " + username + "!"
+                    " seconds before you can do that again!"
                 self.irc.send_message(channel, resp)
                 return
             commands.update_user_last_used(command, channel, username)
@@ -179,7 +185,7 @@ straight and is getting {2} cash!".format(subbed_user, months_subbed, points)
             try:
                 if username not in user_data["chatters"]["moderators"]:
                     if username != TEST_USER:
-                        resp = '(%s) : %s' % (
+                        resp = '/w %s %s' % (
                             username, "This is a moderator-only command!")
                         pbot(resp, channel)
                         self.irc.send_message(channel, resp)

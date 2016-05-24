@@ -36,6 +36,10 @@ class irc:
     def check_for_message(self, data):
         if re.match(r'^:[a-zA-Z0-9_]+\![a-zA-Z0-9_]+@[a-zA-Z0-9_]+(\.tmi\.twitch\.tv|\.testserver\.local) PRIVMSG #[a-zA-Z0-9_]+ :.+$', data):
             return True
+            
+    def check_for_whisper(self, data):
+        if re.match(r'^:[a-zA-Z0-9_]+\![a-zA-Z0-9_]+@[a-zA-Z0-9_]+(\.tmi\.twitch\.tv|\.testserver\.local) WHISPER [a-zA-Z0-9_]+ :.+$', data):
+            return True
 
     def check_for_join(self, data):
         if re.match(r'^:[a-zA-Z0-9_]+\![a-zA-Z0-9_]+@[a-zA-Z0-9_]+(\.tmi\.twitch\.tv|\.testserver\.local) JOIN #[a-zA-Z0-9_]', data):
@@ -69,6 +73,9 @@ class irc:
 
     def get_message(self, data):
         return re.match(r'^:(?P<username>.*?)!.*?PRIVMSG (?P<channel>.*?) :(?P<message>.*)', data).groupdict()
+        
+    def get_whisper(self, data):
+        return re.match(r'^:(?P<username>.*?)!.*?WHISPER (?P<channel>.*?) :(?P<message>.*)', data).groupdict()
 
     def check_login_status(self, data):
         if re.match(r'^:(testserver\.local|tmi\.twitch\.tv) NOTICE \* :Login unsuccessful\r\n$', data):
@@ -125,6 +132,7 @@ class irc:
             pass
 
         self.join_channels(self.channels_to_string(self.config['channels']))
+        self.request_capabilities()
 
     def channels_to_string(self, channel_list):
         return ','.join(channel_list)
@@ -138,3 +146,7 @@ class irc:
         pp('Leaving channels %s,' % channels)
         self.sock.send('PART %s\r\n' % channels)
         pp('Left channels.')
+        
+    def request_capabilities(self):
+        pp("Requesting capabilities")
+        self.sock.send("CAP REQ :twitch.tv/commands\r\n")
