@@ -23,7 +23,7 @@ def lose(args):
             if percentage > 100:
                 return "Sorry, but you can't bet more than a 100%"
             else:
-                multiply = percentage / 100
+                multiply = float(percentage) / 100
                 amount = int(current_points * multiply)
            
         else:

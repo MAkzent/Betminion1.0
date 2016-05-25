@@ -94,7 +94,7 @@ commands = {
         'limit': 0,
         'return': 'command',
         'user_limit': 5,
-        'usage': '!!win [amount] or !win [amount_in_percents]%',
+        'usage': '!win [amount] or !win [amount_in_percents]%',
         'argc': 1
     },
     
@@ -111,6 +111,14 @@ commands = {
         'return': 'command',
         'user_limit': 5,
         'usage': '!result',
+        'argc': 0
+    },
+    
+    '!claim': {
+        'limit': 0,
+        'return': 'command',
+        'user_limit': 5,
+        'usage': '!claim',
         'argc': 0
     },
 }

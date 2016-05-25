@@ -3,7 +3,7 @@
 
 import sqlite3 as lite
 import sys
-from triggers import *
+from datetime import datetime
 test_users = ["user", "singlerider", "testuser"]
 
 
@@ -49,15 +49,16 @@ class Database:
                 """)
 
     def add_user(self, users, channel):
-        user_tuples = [(user, channel, user, channel) for user in users]
+        time = datetime.strftime(datetime.utcnow(), "%Y %m %d %H %M %S")
+        user_tuples = [(user, channel, time, user, channel, time) for user in users]
         with self.con:
             cur = self.con.cursor()
             cur.executemany("""
-                INSERT INTO users(id, username, points, channel)
-                    SELECT NULL, ?, 0, ?
+                INSERT INTO users(id, username, points, channel, last_changed_below_200)
+                    SELECT NULL, ?, 0, ?, ?
                     WHERE NOT EXISTS(
                         SELECT 1 FROM users WHERE username = ?
-                        AND channel = ?);
+                        AND channel = ? AND last_changed_below_200 = ?);
                 """, user_tuples)
 
     def remove_user(self, user="testuser", channel="testchannel"):
@@ -293,6 +294,32 @@ class Database:
             """, [username, channel])
             points = cur.fetchone()
             return points
+            
+    def set_points(self, channel, username, points):
+        with self.con:
+            cur = self.con.cursor()
+            cur.execute("""
+                UPDATE users SET points = ? WHERE username = ?
+                    AND channel = ?;
+                """, [points, username, channel])
+                
+    def get_last_changed_below_200(self, channel, username):
+        with self.con:
+            cur = self.con.cursor()
+            cur.execute("""
+            SELECT last_changed_below_200 FROM users
+            WHERE username = ? AND channel = ?;
+            """, [username, channel])
+            date = cur.fetchone()
+            return date
+            
+    def set_last_changed_below_200(self, channel, username, date):
+        with self.con:
+            cur = self.con.cursor()
+            cur.execute("""
+                UPDATE users SET last_changed_below_200 = ? WHERE username = ?
+                    AND channel = ?;
+                """, [date, username, channel])
 
 if __name__ == "__main__":
     channel = "testchannel"
@@ -327,3 +354,7 @@ if __name__ == "__main__":
     db.remove_quotes()
     db.remove_channel_info()
     db.remove_channel_data()
+    
+    
+    
+from src.lib.triggers import *
