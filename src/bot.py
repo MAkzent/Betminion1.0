@@ -173,12 +173,11 @@ class Roboraj(object):
             user_data, __ = twitch.get_dict_for_users(channel)
             try:
                 if username not in user_data["chatters"]["moderators"]:
-                    if username != TEST_USER:
-                        resp = '/w %s %s' % (
-                            username, "This is a moderator-only command!")
-                        pbot(resp, channel)
-                        self.irc.send_message(channel, resp)
-                        return
+                    resp = '/w %s %s' % (
+                        username, "This is a moderator-only command!")
+                    pbot(resp, channel)
+                    self.irc.send_message(channel, resp)
+                    return
             except Exception as error:
                 with open("errors.txt", "a") as f:
                     error_message = "{0} | {1} : {2}\n{3}\n{4}".format(
