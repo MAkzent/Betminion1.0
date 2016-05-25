@@ -9,57 +9,12 @@ commands = {
         'usage': '!commands'
     },
 
-    '!followers': {
-        'limit': 30,
-        'return': 'command',
-        'argc': 0,
-        'usage': '!followers'
-    },
-
-    '!follower': {
-        'limit': 0,
-        'return': 'command',
-        'argc': 1,
-        'usage': '!follower [username]'
-    },
-
     '!uptime': {
         'limit': 15,
         'return': 'command',
         'argc': 0,
         'usage': '!uptime',
         'user_limit': 5
-    },
-
-    '!stream': {
-        'limit': 60,
-        'return': 'command',
-        'argc': 0,
-        'usage': '!stream'
-    },
-
-    '!popularity': {
-        'limit': 0,
-        'argc': 1,
-        'return': 'command',
-        'space_case': True,
-        'usage': '!popularity [name_of_game]'
-    },
-
-    '!follow': {
-        'limit': 0,
-        'argc': 1,
-        'return': 'command',
-        'usage': '!follow [streamer_username]',
-        'ul': 'mod'
-    },
-
-    '!donation': {
-        'limit': 0,
-        'argc': 2,
-        'return': 'command',
-        'usage': '!donation [username] [dollar_amount]',
-        'ul': 'mod'
     },
 
     '!cash': {
@@ -71,27 +26,6 @@ commands = {
         'optional': True
     },
 
-    '!add': {
-        'limit': 0,
-        'argc': 3,
-        'return': 'command',
-        'usage': '!add [command] [user_level("mod"/"reg") [response (\"{}\" replaces with username, \"[]\" replaces with counter)]'
-    },
-
-    '!edit': {
-        'limit': 0,
-        'argc': 3,
-        'return': 'command',
-        'usage': '!edit [command] [user_level("mod"/"reg") [response (\"{}\" replaces with username, \"[]\" replaces with counter)]'
-    },
-
-    '!rem': {
-        'limit': 0,
-        'argc': 1,
-        'return': 'command',
-        'usage': '!rem [command]'
-    },
-
     '!test': {
         'limit': 0,
         'user_limit': 15,
@@ -99,57 +33,11 @@ commands = {
         'usage': '!test'
     },
 
-    '!addquote': {
-        'limit': 0,
-        'argc': 1,
-        'user_limit': 15,
-        'return': 'command',
-        'usage': '!addquote [quote]',
-        'space_case': True
-    },
-
-    '!quote': {
-        'limit': 0,
-        'argc': 0,
-        'user_limit': 5,
-        'return': 'command',
-        'usage': '!quote'
-    },
-
-    '!gamble': {
-        'limit': 0,
-        'argc': 1,
-        'return': 'command',
-        'usage': '!gamble [points_to_gamble_with]'
-    },
-
-    '!chance': {
-        'limit': 0,
-        'argc': 0,
-        'return': 'command',
-        'usage': '!chance',
-        'user_limit': 1800
-    },
-
-    '!join': {
-        'limit': 0,
-        'argc': 0,
-        'return': 'command',
-        'usage': '!join'
-    },
-
     '!pot': {
         'limit': 0,
         'argc': 0,
         'return': 'command',
         'usage': '!pot'
-    },
-
-    '!gift': {
-        'limit': 0,
-        'argc': 2,
-        'return': 'command',
-        'usage': '!gift [username] [amount]'
     },
 
     '!top10': {
@@ -160,32 +48,24 @@ commands = {
         'argc': 0
     },
 
-    '!hosts': {
-        'limit': 0,
-        'return': 'command',
-        'usage': '!hosts',
-        'argc': 0
-    },
-    
-    
     '!points': {
         'limit': 0,
         'return': 'command',
-        'user_limit': 20,
+        'user_limit': 5,
         'usage': '!points'
     },
     
     '!help': {
         'limit': 0,
         'return': "Lorem Ipsum",
-        'user_limit': 20,
+        'user_limit': 5,
         'usage': '!help'
     },
     
     '!start': {
         'limit': 0,
         'return': 'command',
-        'user_limit': 20,
+        'user_limit': 5,
         'usage': '!start',
         'ul': 'mod'
     },
@@ -193,7 +73,7 @@ commands = {
     '!stop': {
         'limit': 0,
         'return': 'command',
-        'user_limit': 20,
+        'user_limit': 5,
         'usage': '!stop',
         'ul': 'mod'
     },
@@ -201,7 +81,7 @@ commands = {
     '!outcome': {
         'limit': 0,
         'return': 'command',
-        'user_limit': 20,
+        'user_limit': 5,
         'usage': '!outcome [win/lose]',
         'ul': 'mod',
         'argc': 1
@@ -210,7 +90,7 @@ commands = {
     '!win': {
         'limit': 0,
         'return': 'command',
-        'user_limit': 20,
+        'user_limit': 5,
         'usage': '!!win [amount] or !win [amount_in_percents]%',
         'argc': 1
     },
@@ -218,7 +98,7 @@ commands = {
     '!lose': {
         'limit': 0,
         'return': 'command',
-        'user_limit': 20,
+        'user_limit': 5,
         'usage': '!lose [amount] or !lose [amount_in_percents]%',
         'argc': 1
     },
@@ -226,7 +106,7 @@ commands = {
     '!result': {
         'limit': 0,
         'return': 'command',
-        'user_limit': 20,
+        'user_limit': 5,
         'usage': '!result'
     },
 }

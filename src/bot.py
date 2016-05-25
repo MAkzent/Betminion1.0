@@ -25,11 +25,6 @@ sys.setdefaultencoding("utf8")
 
 END = False
 
-BOT_USER = "ravenbot007"
-TEST_USER = "singlerider"
-STREAM_USER = "ravenhart007"
-
-
 class Roboraj(object):
 
     def __init__(self, config):
@@ -46,58 +41,59 @@ class Roboraj(object):
 
     def run(self):
 
-        def check_for_sub(channel, username, message):
-            # >> :twitchnotify!twitchnotify@twitchnotify.tmi.twitch.tv PRIVMSG #curvyllama :KiefyWonder subscribed for 5 months in a row!
-            # >> :twitchnotify!twitchnotify@twitchnotify.tmi.twitch.tv PRIVMSG #curvyllama :KiefyWonder just subscribed!
-            # Photo_phocus just subscribed to jonsandman!
-            # HermanNugent subscribed to JonSandman for 7 months in a row!
-            # first sub points = 1000
-            # resub = 250
-            db = Database()
-            try:
-                channel = channel.lstrip("#")
-                message_split = message.rstrip("!").split()
-                subbed_user = message_split[0].lower()
-                if message_split[1] == "just" and len(message_split) < 4:
-                    points = 1000
-                    db.add_user([subbed_user], channel)
-                    db.modify_points(subbed_user, channel, points)
-                    resp = "/me {0} just subscribed for the first time!\
- {1} cash for you!".format(subbed_user, points)
-                    self.irc.send_message("#" + channel, resp)
-                elif message_split[1] == "subscribed" and len(message_split) < 9:
-                    months_subbed = message_split[3]
-                    points = 250
-                    db.add_user([subbed_user], channel)
-                    db.modify_points(subbed_user, channel, points)
-                    resp = "/me {0} has just resubscribed for {1} months \
-straight and is getting {2} cash!".format(subbed_user, months_subbed, points)
-                    self.irc.send_message("#" + channel, resp)
-            except Exception as error:
-                print error
+        # This is a very handy function, so I'm not deleting it yet
+        # def check_for_sub(channel, username, message):
+            # # >> :twitchnotify!twitchnotify@twitchnotify.tmi.twitch.tv PRIVMSG #curvyllama :KiefyWonder subscribed for 5 months in a row!
+            # # >> :twitchnotify!twitchnotify@twitchnotify.tmi.twitch.tv PRIVMSG #curvyllama :KiefyWonder just subscribed!
+            # # Photo_phocus just subscribed to jonsandman!
+            # # HermanNugent subscribed to JonSandman for 7 months in a row!
+            # # first sub points = 1000
+            # # resub = 250
+            # db = Database()
+            # try:
+                # channel = channel.lstrip("#")
+                # message_split = message.rstrip("!").split()
+                # subbed_user = message_split[0].lower()
+                # if message_split[1] == "just" and len(message_split) < 4:
+                    # points = 1000
+                    # db.add_user([subbed_user], channel)
+                    # db.modify_points(subbed_user, channel, points)
+                    # resp = "/me {0} just subscribed for the first time!\
+ # {1} cash for you!".format(subbed_user, points)
+                    # self.irc.send_message("#" + channel, resp)
+                # elif message_split[1] == "subscribed" and len(message_split) < 9:
+                    # months_subbed = message_split[3]
+                    # points = 250
+                    # db.add_user([subbed_user], channel)
+                    # db.modify_points(subbed_user, channel, points)
+                    # resp = "/me {0} has just resubscribed for {1} months \
+# straight and is getting {2} cash!".format(subbed_user, months_subbed, points)
+                    # self.irc.send_message("#" + channel, resp)
+            # except Exception as error:
+                # print error
 
-        def custom_command(channel, message, username, elements):
-            db = Database()
-            command = elements[3]
-            chan = channel.lstrip("#")
-            replacement_user = username
-            if len(message) > 1:
-                replacement_user = message[1]
-            if elements[6] == "mod":
-                user_dict, __ = get_dict_for_users()
-                if username in user_dict["chatters"]["moderators"]:
-                    resp = elements[4].replace("{}", replacement_user).replace(
-                        "[]", str(elements[5]))
-                    self.irc.send_message(channel, resp)
-                    db.increment_command(command, chan)
-                else:
-                    resp = "This is a moderator-only command"
-                    self.irc.send_message(channel, resp)
-            elif elements[6] == "reg":
-                resp = elements[4].replace("{}", replacement_user).replace(
-                    "[]", str(elements[5]))
-                self.irc.send_message(channel, resp)
-                db.increment_command(command, chan)
+        # def custom_command(channel, message, username, elements):
+            # db = Database()
+            # command = elements[3]
+            # chan = channel.lstrip("#")
+            # replacement_user = username
+            # if len(message) > 1:
+                # replacement_user = message[1]
+            # if elements[6] == "mod":
+                # user_dict, __ = get_dict_for_users()
+                # if username in user_dict["chatters"]["moderators"]:
+                    # resp = elements[4].replace("{}", replacement_user).replace(
+                        # "[]", str(elements[5]))
+                    # self.irc.send_message(channel, resp)
+                    # db.increment_command(command, chan)
+                # else:
+                    # resp = "This is a moderator-only command"
+                    # self.irc.send_message(channel, resp)
+            # elif elements[6] == "reg":
+                # resp = elements[4].replace("{}", replacement_user).replace(
+                    # "[]", str(elements[5]))
+                # self.irc.send_message(channel, resp)
+                # db.increment_command(command, chan)
 
         while True:
             try:
@@ -117,15 +113,8 @@ straight and is getting {2} cash!".format(subbed_user, months_subbed, points)
                 globals.CURRENT_CHANNEL = channel.lstrip('#')
                 globals.CURRENT_USER = username
                 chan = channel.lstrip("#")
-                if message[0] == "!":
-                    command = message.split(" ")[0]
-                    command_data = self.db.get_command(command, chan)
-                    if command_data:
-                        message_split = message.split(" ")
-                        custom_command(
-                            channel, message_split, username, command_data)
-                if username == "twitchnotify":
-                    check_for_sub(channel, username, message)
+                # if username == "twitchnotify":
+                    # check_for_sub(channel, username, message)
                 part = message.split(' ')[0]
                 valid = False
                 if commands.is_valid_command(message):
@@ -195,11 +184,6 @@ straight and is getting {2} cash!".format(subbed_user, months_subbed, points)
                     error_message = "{0} | {1} : {2}\n{3}\n{4}".format(
                         username, channel, command, user_data, error)
                     f.write(error_message)
-        approved_channels = [STREAM_USER, BOT_USER, TEST_USER]
-        if globals.CURRENT_CHANNEL not in approved_channels:
-            prevented_list = []
-            if command.lstrip("!") in prevented_list:
-                return
         result = commands.pass_to_function(command, args)
         commands.update_last_used(command, channel)
         if result:
