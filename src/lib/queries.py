@@ -3,6 +3,7 @@
 
 import sqlite3 as lite
 import sys
+from triggers import *
 test_users = ["user", "singlerider", "testuser"]
 
 
@@ -18,7 +19,8 @@ class Database:
             cur.execute("""
                 CREATE TABLE IF NOT EXISTS users(
                     id INTEGER PRIMARY KEY,
-                    username TEXT, points INT, channel TEXT);
+                    username TEXT, points INT,
+                    channel TEXT, last_changed_below_200 TEXT);
                 """)
             cur.execute("""
                 CREATE TABLE IF NOT EXISTS custom_commands(
@@ -76,6 +78,9 @@ class Database:
 
     def modify_points(self, user="testuser", channel="testchannel", points=5):
         with self.con:
+            last_points = self.get_points(channel, user)[0]
+            trigger_more_than_5000(user, channel, last_points, points)
+            
             cur = self.con.cursor()
             cur.execute("""
                 UPDATE users SET points = points + ? WHERE username = ?
@@ -285,7 +290,7 @@ class Database:
             cur.execute("""
             SELECT points FROM users
             WHERE username = ? AND channel = ?;
-            """, [channel, username])
+            """, [username, channel])
             points = cur.fetchone()
             return points
 

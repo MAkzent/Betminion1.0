@@ -33,7 +33,7 @@ class Bets:
         bets_winning = self.calculate_winning_points(outcome)
         
         try:
-            profit = bets_total/bets_winning
+            profit = float(bets_total)/bets_winning
         except ZeroDivisionError:
             msg = "Sorry, there are no winners"
             self.irc.send_message(self.chan, msg)
