@@ -52,7 +52,8 @@ commands = {
         'limit': 0,
         'return': 'command',
         'user_limit': 5,
-        'usage': '!points'
+        'usage': '!points',
+        'argc': 0
     },
     
     '!help': {
@@ -67,7 +68,8 @@ commands = {
         'return': 'command',
         'user_limit': 5,
         'usage': '!start',
-        'ul': 'mod'
+        'ul': 'mod',
+        'argc': 0
     },
     
     '!stop': {
@@ -75,7 +77,8 @@ commands = {
         'return': 'command',
         'user_limit': 5,
         'usage': '!stop',
-        'ul': 'mod'
+        'ul': 'mod',
+        'argc': 0
     },
     
     '!outcome': {
@@ -107,7 +110,8 @@ commands = {
         'limit': 0,
         'return': 'command',
         'user_limit': 5,
-        'usage': '!result'
+        'usage': '!result',
+        'argc': 0
     },
 }
 
