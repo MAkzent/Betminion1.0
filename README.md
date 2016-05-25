@@ -2,15 +2,7 @@ Disclaimer: Code taken from https://github.com/singlerider/ravenbot007 with perm
 
 ===============================
 
-Try it out! Code is live at
-http://www.twitch.tv/ravenhart007
-===============================
-
-# ravenbot007
-
 This is a Twitch chat/irc bot written in Python (2.6 / 2.7).
-
-![Screencapture GIF](http://i.imgur.com/eLzyojy.gif?1)![Screencapture GIF](http://i.imgur.com/YjObviU.gif)
 
 ## Installation
 
