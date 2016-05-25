@@ -6,6 +6,7 @@ from command_headers import *
 import sys
 import traceback
 
+#Different functions for commands
 
 def is_valid_command(command):
     if command in commands:

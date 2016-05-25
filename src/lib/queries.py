@@ -79,6 +79,7 @@ class Database:
 
     def modify_points(self, user="testuser", channel="testchannel", points=5):
         with self.con:
+            #Tries to start a trigger everytime points are modified
             last_points = self.get_points(channel, user)[0]
             trigger_more_than_5000(user, channel, last_points, points)
             

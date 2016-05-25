@@ -3,9 +3,11 @@ import time
 import sys
 from threading import Thread
 
+#Initialized from stop.py
 def initialize(chan, delay):
     BetsThread(globals.irc, chan, delay).start()
-    
+
+#Basically just a thread for the betting countdown    
 class BetsThread(Thread):
 
     def __init__(self, irc, chan, delay):

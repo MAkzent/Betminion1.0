@@ -42,6 +42,8 @@ class Roboraj(object):
     def run(self):
 
         # This is a very handy function, so I'm not deleting it yet
+        
+        
         # def check_for_sub(channel, username, message):
             # # >> :twitchnotify!twitchnotify@twitchnotify.tmi.twitch.tv PRIVMSG #curvyllama :KiefyWonder subscribed for 5 months in a row!
             # # >> :twitchnotify!twitchnotify@twitchnotify.tmi.twitch.tv PRIVMSG #curvyllama :KiefyWonder just subscribed!
@@ -71,7 +73,11 @@ class Roboraj(object):
                     # self.irc.send_message("#" + channel, resp)
             # except Exception as error:
                 # print error
-
+                      
+                
+        # For admin created commands. Not that useful but I'll keep it in case I have to implement it
+        
+        
         # def custom_command(channel, message, username, elements):
             # db = Database()
             # command = elements[3]
@@ -94,25 +100,27 @@ class Roboraj(object):
                     # "[]", str(elements[5]))
                 # self.irc.send_message(channel, resp)
                 # db.increment_command(command, chan)
-
+                
+        #Main process
         while True:
             try:
                 data = self.irc.nextMessage()
                 if self.irc.check_for_message(data):
                     message_dict = self.irc.get_message(data)
                     channel = message_dict['channel']
-                    message = message_dict['message']  # .lower()
+                    message = message_dict['message']
                     username = message_dict['username']
                 elif self.irc.check_for_whisper(data):
                     message_dict = self.irc.get_whisper(data)
                     channel = self.irc.config["channels"][0]
-                    message = message_dict['message']  # .lower()
+                    message = message_dict['message']
                     username = message_dict['username']
                 else:
                     continue
                 globals.CURRENT_CHANNEL = channel.lstrip('#')
                 globals.CURRENT_USER = username
                 chan = channel.lstrip("#")
+                #Part of the "subscribed" functionality
                 # if username == "twitchnotify":
                     # check_for_sub(channel, username, message)
                 part = message.split(' ')[0]

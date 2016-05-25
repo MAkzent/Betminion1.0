@@ -2,6 +2,7 @@ from src.lib.queries import Database
 from datetime import datetime, timedelta
 import globals
 
+#Checks if 24h have passed and resets points to 200
 def claim():
     username = globals.CURRENT_USER
     channel = globals.CURRENT_CHANNEL

@@ -1,5 +1,6 @@
 import globals
 
+#Look up Readme.md
 commands = {
 
     '!commands': {

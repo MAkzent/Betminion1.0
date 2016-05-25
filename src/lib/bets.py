@@ -2,6 +2,8 @@ from src.lib.queries import Database
 from src.lib.triggers import *
 import globals
 
+#Main Bets class that contains all of the bidders data and distributes profit
+#Constructed in start.py
 class Bets:
 
     def __init__(self):
@@ -27,7 +29,8 @@ class Bets:
                 winning_points += bidder["amount"]
             
         return winning_points
-        
+    
+    #Called from outcome.py
     def distribute_profit(self, outcome):
         db = Database()
         bets_total = self.calculate_total_points()
