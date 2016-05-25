@@ -3,7 +3,7 @@ from src.lib.bets import Bets
 
 def start():
 
-    if not global.BETS:
+    if not globals.BETS:
         channel = globals.CURRENT_CHANNEL
         chan = "#" + channel
         irc = globals.irc

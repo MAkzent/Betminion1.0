@@ -33,7 +33,7 @@ def lose(args):
                 print error
                 return "Sorry, but your betting amount should be a number or a percentage"
             if amount > current_points:
-                return "Sorry, but you don't have that many points"
+                return "You currently have {0} points, use them wisely.".format(current_points)
         
         globals.BETS_DATA.add_bidder(username, amount, "lose")
         db.modify_points(username, channel, -amount)

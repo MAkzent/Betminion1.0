@@ -37,7 +37,7 @@ class Bets:
         except ZeroDivisionError:
             msg = "Sorry, there are no winners"
             self.irc.send_message(self.chan, msg)
-            return False
+            return
         
         try:
             for bidder in self.bets_data:
@@ -54,7 +54,8 @@ class Bets:
             print error
             msg = "Sorry, there was an error distributing profit"
             self.irc.send_message(self.chan, msg)
-            return False
-            
+            return
+        
+        msg = "Winnings have been released!"
+        self.irc.send_message(self.chan, msg)
         self.bets_data = []
-        return True
