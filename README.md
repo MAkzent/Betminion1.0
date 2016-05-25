@@ -7,7 +7,7 @@ This is a Twitch chat/irc bot written in Python (2.6 / 2.7).
 ## Setting up
 
 First you need to set up another twitch account for your bot. And make sure to make it a mod on your main twitch channel.
-Then go to http://twitchapps.com/tmi/ and retrieve OAuth token for your account, you'll need it later.
+Then go to http://twitchapps.com/tmi/ and retrieve OAuth token for your bot account, you'll need it later.
 
 ## Installation
 
@@ -53,9 +53,9 @@ Make a copy of the example globals file:
 
 Head into `src/config/config.py` and enter following values into variables (make sure not to erase any brackets and quotation marks):
 
-> - Your bot login into "username"
-> - Your OAuth token into "oauth_password"
-> - Your main channel name into "channels_to_join" with a hashtag
+- Your bot login into "username"
+- Your OAuth token into "oauth_password"
+- Your main channel name into "channels_to_join" with a hashtag
 
 ## Make It Do
 
