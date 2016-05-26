@@ -115,13 +115,13 @@ commands = {
         'argc': 0
     },
     
-    '!claim': {
-        'limit': 0,
-        'return': 'command',
-        'user_limit': 5,
-        'usage': '!claim',
-        'argc': 0
-    },
+    # '!claim': {
+        # 'limit': 0,
+        # 'return': 'command',
+        # 'user_limit': 5,
+        # 'usage': '!claim',
+        # 'argc': 0
+    # },
 }
 
 user_cooldowns = {"channels": {}}

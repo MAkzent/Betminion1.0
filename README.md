@@ -48,6 +48,9 @@ Make a copy of the example globals file:
 
 `cp globals_example.py globals.py`
 
+Make a copy of the example crons file:
+
+`cp src/config/crons_example.py src/config/crons.py`
 
 #### Config
 
@@ -56,6 +59,8 @@ Head into `src/config/config.py` and enter following values into variables (make
 - Your bot login into "username"
 - Your OAuth token into "oauth_password"
 - Your main channel name into "channels_to_join" with a hashtag
+
+Now head into `src/config/crons.py` and replace "channel" with your channel (don't forget about the hashtag)
 
 ## Make It Do
 

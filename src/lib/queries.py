@@ -40,7 +40,8 @@ class Database:
                     id INTEGER PRIMARY KEY, channel TEXT,
                     stream_id INTEGER DEFAULT 0,
                     twitch_oauth TEXT DEFAULT '',
-                    twitchalerts_oauth TEXT DEFAULT '');
+                    twitchalerts_oauth TEXT DEFAULT '',
+                    last_time_points_reset TEXT);
                 """)
             cur.execute("""
                 CREATE TABLE IF NOT EXISTS channel_data(
@@ -321,6 +322,35 @@ class Database:
                 UPDATE users SET last_changed_below_200 = ? WHERE username = ?
                     AND channel = ?;
                 """, [date, username, channel])
+                
+    def get_last_time_points_reset(self, channel):
+        with self.con:
+            cur = self.con.cursor()
+            cur.execute("""
+            SELECT last_time_points_reset FROM channel_info
+            WHERE channel = ?;
+            """, [channel])
+            date = cur.fetchone()
+            return date
+            
+    def set_last_time_points_reset(self, channel, date):
+        with self.con:
+            cur = self.con.cursor()
+            cur.execute("""
+                UPDATE channel_info SET last_time_points_reset = ? WHERE channel = ?;
+                """, [date, channel])
+                
+    def get_all_usernames(self, channel):
+        with self.con:
+            usernames = []
+            cur = self.con.cursor()
+            cur.execute("""
+                SELECT username FROM users WHERE channel = ?
+                """, [channel])
+            usernames_tuples = cur.fetchall()
+            for usernames_tuple in usernames_tuples:
+                usernames.append(usernames_tuple[0])
+            return usernames
 
 if __name__ == "__main__":
     channel = "testchannel"

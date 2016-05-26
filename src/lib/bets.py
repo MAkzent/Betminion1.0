@@ -51,7 +51,7 @@ class Bets:
                     msg = "/w {0} Congrats! You won {1} points!".format(bidder["username"], winnings)
                     self.irc.send_message(self.chan, msg)
                 else:
-                    trigger_less_than_200(bidder["username"], self.channel)
+                    # trigger_less_than_200(bidder["username"], self.channel)
                     msg = "/w {0} Feelsbadman, maybe you will win next time".format(bidder["username"])
                     self.irc.send_message(self.chan, msg)
                 
