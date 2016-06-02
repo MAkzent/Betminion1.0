@@ -1,18 +1,21 @@
 import globals
 from src.lib.bets import Bets
 from src.lib.queries import Database
+from datetime import datetime
 
 def lose(args):
-    if globals.BETS:
+    db = Database()
+    channel = globals.CURRENT_CHANNEL
+    bets = db.are_bets(channel)[0]
+    
+    if bets:
         username = globals.CURRENT_USER
-        channel = globals.CURRENT_CHANNEL
-        db = Database()
         
-        if db.get_user(username, channel) == None:
-            db.add_user([username], channel)
-            db.modify_points(username, channel, 1000)
-            
-        current_points = db.get_points(channel, username)[0]
+        if db.get_user(username) == None:
+            db.add_user([username])
+            db.modify_points(username, 1000)
+        
+        current_points = db.get_points(username)[0]
         
         if (args[0][-1] == "%"):
             try:
@@ -35,8 +38,9 @@ def lose(args):
             if amount > current_points:
                 return "You currently have {0} points, use them wisely.".format(current_points)
         
-        globals.BETS_DATA.add_bidder(username, amount, "lose")
-        db.modify_points(username, channel, -amount)
+        date = datetime.strftime(datetime.utcnow(), "%Y %m %d %H %M %S") 
+        db.add_bidder(channel, username, amount, "lose", date)
+        db.modify_points(username, -amount)
         return "Bet successfully placed! You bet {0} that {1} will lose".format(amount, channel)
         
     else:

@@ -1,5 +1,5 @@
 from src.lib.queries import Database
-from src.lib.triggers import *
+from datetime import datetime
 import globals
 
 #Main Bets class that contains all of the bidders data and distributes profit
@@ -7,32 +7,31 @@ import globals
 class Bets:
 
     def __init__(self):
-        self.bets_data = []
         self.irc = globals.irc
         self.channel = globals.CURRENT_CHANNEL
         self.chan = "#" + self.channel
-
-    def add_bidder(self, username, amount, bet):
-        self.bets_data.append({"username": username, "amount": amount, "bet": bet})
+        self.db = Database()
+        #self.bets_started = datetime.strptime(self.db.get_bets_started(self.channel)[0], "%Y %m %d %H %M %S")
+        #Generates list of tuples(username, amount, outcome, date) that only consists of bidders that bet after the bets have started
+        self.bets_data = [x for x in self.db.get_bets_data(self.channel) if datetime.strptime(x[3], "%Y %m %d %H %M %S") > datetime.strptime(self.db.get_bets_started(self.channel)[0], "%Y %m %d %H %M %S")]
         
     def calculate_total_points(self):
         total_points = 0
         for bidder in self.bets_data:
-            total_points += bidder["amount"]
+            total_points += bidder[1]
             
         return total_points
         
     def calculate_winning_points(self, outcome):
         winning_points = 0
         for bidder in self.bets_data:
-            if bidder["bet"] == outcome:
-                winning_points += bidder["amount"]
+            if bidder[2] == outcome:
+                winning_points += bidder[1]
             
         return winning_points
     
     #Called from outcome.py
     def distribute_profit(self, outcome):
-        db = Database()
         bets_total = self.calculate_total_points()
         bets_winning = self.calculate_winning_points(outcome)
         
@@ -45,14 +44,13 @@ class Bets:
         
         try:
             for bidder in self.bets_data:
-                if bidder["bet"] == outcome:
-                    winnings = int(profit*bidder["amount"])
-                    db.modify_points(bidder["username"], self.channel, winnings)
-                    msg = "/w {0} Congrats! You won {1} points!".format(bidder["username"], winnings)
+                if bidder[2] == outcome:
+                    winnings = int(profit*bidder[1])
+                    self.db.modify_points(bidder[0], winnings)
+                    msg = "/w {0} Congrats! You won {1} points!".format(bidder[0], winnings)
                     self.irc.send_message(self.chan, msg)
                 else:
-                    # trigger_less_than_200(bidder["username"], self.channel)
-                    msg = "/w {0} Feelsbadman, maybe you will win next time".format(bidder["username"])
+                    msg = "/w {0} Feelsbadman, maybe you will win next time".format(bidder[0])
                     self.irc.send_message(self.chan, msg)
                 
         except Exception as error:
@@ -63,4 +61,3 @@ class Bets:
         
         msg = "Winnings have been released!"
         self.irc.send_message(self.chan, msg)
-        self.bets_data = []

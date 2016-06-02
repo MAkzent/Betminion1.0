@@ -20,7 +20,7 @@ class Database:
                 CREATE TABLE IF NOT EXISTS users(
                     id INTEGER PRIMARY KEY,
                     username TEXT, points INT,
-                    channel TEXT, last_changed_below_200 TEXT);
+                    channel TEXT);
                 """)
             cur.execute("""
                 CREATE TABLE IF NOT EXISTS custom_commands(
@@ -41,25 +41,44 @@ class Database:
                     stream_id INTEGER DEFAULT 0,
                     twitch_oauth TEXT DEFAULT '',
                     twitchalerts_oauth TEXT DEFAULT '',
-                    last_time_points_reset TEXT);
+                    last_time_points_reset TEXT,
+                    bets BOOL DEFAULT 0,
+                    bets_started TEXT,
+                    last_result TEXT);
                 """)
             cur.execute("""
                 CREATE TABLE IF NOT EXISTS channel_data(
                     id INTEGER PRIMARY KEY, channel TEXT,
                     username TEXT, data_type TEXT);
                 """)
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS bets(
+                    id INTEGER PRIMARY KEY, channel TEXT, username TEXT,
+                    amount INTEGER, outcome TEXT, date TEXT);
+                """)
 
-    def add_user(self, users, channel):
-        time = datetime.strftime(datetime.utcnow(), "%Y %m %d %H %M %S")
-        user_tuples = [(user, channel, time, user, channel, time) for user in users]
+    # def add_user(self, users, channel):
+        # time = datetime.strftime(datetime.utcnow(), "%Y %m %d %H %M %S")
+        # user_tuples = [(user, channel, time, user, channel, time) for user in users]
+        # with self.con:
+            # cur = self.con.cursor()
+            # cur.executemany("""
+                # INSERT INTO users(id, username, points, channel, last_changed_below_200)
+                    # SELECT NULL, ?, 0, ?, ?
+                    # WHERE NOT EXISTS(
+                        # SELECT 1 FROM users WHERE username = ?
+                        # AND channel = ? AND last_changed_below_200 = ?);
+                # """, user_tuples)
+                
+    def add_user(self, users):
+        user_tuples = [(user, user) for user in users]
         with self.con:
             cur = self.con.cursor()
             cur.executemany("""
-                INSERT INTO users(id, username, points, channel, last_changed_below_200)
-                    SELECT NULL, ?, 0, ?, ?
+                INSERT INTO users(id, username, points, channel)
+                    SELECT NULL, ?, 0, NULL
                     WHERE NOT EXISTS(
-                        SELECT 1 FROM users WHERE username = ?
-                        AND channel = ? AND last_changed_below_200 = ?);
+                        SELECT 1 FROM users WHERE username = ?);
                 """, user_tuples)
 
     def remove_user(self, user="testuser", channel="testchannel"):
@@ -69,26 +88,46 @@ class Database:
                 DELETE FROM users WHERE username = ? and channel = ?;
                 """, [user, channel])
 
-    def get_user(self, user="testuser", channel="testchannel"):
+    # def get_user(self, user="testuser", channel="testchannel"):
+        # with self.con:
+            # cur = self.con.cursor()
+            # cur.execute("""
+                # SELECT * FROM users WHERE username = ? and channel = ?
+                # """, [user, channel])
+            # user_data = cur.fetchone()
+            # return user_data
+            
+    def get_user(self, user="testuser"):
         with self.con:
             cur = self.con.cursor()
             cur.execute("""
-                SELECT * FROM users WHERE username = ? and channel = ?
-                """, [user, channel])
+                SELECT * FROM users WHERE username = ?;
+                """, [user])
             user_data = cur.fetchone()
             return user_data
 
-    def modify_points(self, user="testuser", channel="testchannel", points=5):
+    # def modify_points(self, user="testuser", channel="testchannel", points=5):
+        # with self.con:
+            # #Tries to start a trigger everytime points are modified
+            # last_points = self.get_points(channel, user)[0]
+            # trigger_more_than_5000(user, channel, last_points, points)
+            
+            # cur = self.con.cursor()
+            # cur.execute("""
+                # UPDATE users SET points = points + ? WHERE username = ?
+                    # AND channel = ?;
+                # """, [points, user, channel])
+                
+    def modify_points(self, user="testuser", points=5):
         with self.con:
             #Tries to start a trigger everytime points are modified
-            last_points = self.get_points(channel, user)[0]
-            trigger_more_than_5000(user, channel, last_points, points)
+            last_points = self.get_points(user)[0]
+            trigger_more_than_5000(user, last_points, points)
             
             cur = self.con.cursor()
             cur.execute("""
-                UPDATE users SET points = points + ? WHERE username = ?
-                    AND channel = ?;
-                """, [points, user, channel])
+                UPDATE users SET points = points + ? WHERE username = ?;
+                """, [points, user])
 
     def add_command(
             self, user="testuser", command="!test",
@@ -287,23 +326,22 @@ class Database:
                 DELETE FROM channel_data WHERE channel = ? AND data_type = ?;
                 """, [channel, data_type])
                 
-    def get_points(self, channel, username):
+    def get_points(self, username):
         with self.con:
             cur = self.con.cursor()
             cur.execute("""
             SELECT points FROM users
-            WHERE username = ? AND channel = ?;
-            """, [username, channel])
+            WHERE username = ?;
+            """, [username])
             points = cur.fetchone()
             return points
             
-    def set_points(self, channel, username, points):
+    def set_points(self, username, points):
         with self.con:
             cur = self.con.cursor()
             cur.execute("""
-                UPDATE users SET points = ? WHERE username = ?
-                    AND channel = ?;
-                """, [points, username, channel])
+                UPDATE users SET points = ? WHERE username = ?;
+                """, [points, username])
                 
     def get_last_changed_below_200(self, channel, username):
         with self.con:
@@ -340,17 +378,102 @@ class Database:
                 UPDATE channel_info SET last_time_points_reset = ? WHERE channel = ?;
                 """, [date, channel])
                 
-    def get_all_usernames(self, channel):
+    def get_all_usernames(self):
         with self.con:
             usernames = []
             cur = self.con.cursor()
             cur.execute("""
-                SELECT username FROM users WHERE channel = ?
-                """, [channel])
+                SELECT username FROM users;
+                """)
             usernames_tuples = cur.fetchall()
             for usernames_tuple in usernames_tuples:
                 usernames.append(usernames_tuple[0])
             return usernames
+            
+    def are_bets(self, channel):
+        with self.con:
+            cur = self.con.cursor()
+            cur.execute("""
+                SELECT bets FROM channel_info WHERE channel = ?;
+                """, [channel])
+            bets = cur.fetchone()
+            return bets
+            
+    def set_bets(self, channel, value):
+        with self.con:
+            cur = self.con.cursor()
+            cur.execute("""
+                UPDATE channel_info SET bets = ? WHERE channel = ?;
+                """, [value, channel])
+                
+    def get_bets_started(self, channel):
+        with self.con:
+            cur = self.con.cursor()
+            cur.execute("""
+                SELECT bets_started FROM channel_info WHERE channel = ?;
+                """, [channel])
+            bets_started = cur.fetchone()
+            return bets_started
+           
+    def set_bets_started(self, channel, date):
+        with self.con:
+            cur = self.con.cursor()
+            cur.execute("""
+                UPDATE channel_info SET bets_started = ? WHERE channel = ?;
+                """, [date, channel])
+                
+    def add_bidder(self, channel, username, amount, outcome, date):
+        with self.con:
+            cur = self.con.cursor()
+            cur.execute("""
+                INSERT INTO bets (channel, username, amount, outcome, date)  
+                VALUES (?, ?, ?, ?, ?);
+                """, [channel, username, amount, outcome, date])
+                
+    def set_last_result(self, channel, result):
+        with self.con:
+            cur = self.con.cursor()
+            cur.execute("""
+                UPDATE channel_info SET last_result = ? WHERE channel = ?;
+                """, [result, channel])
+                
+    def get_last_result(self, channel):
+        with self.con:
+            cur = self.con.cursor()
+            cur.execute("""
+            SELECT last_result FROM channel_info
+            WHERE channel = ?;
+            """, [channel])
+            result = cur.fetchone()
+            return result
+            
+    def get_bets_data(self, channel):
+        with self.con:
+            cur = self.con.cursor()
+            cur.execute("""
+            SELECT username, amount, outcome, date FROM bets
+            WHERE channel = ?;
+            """, [channel])
+            bets_data = cur.fetchall()
+            return bets_data
+            
+    def get_all_bets_data(self):
+        with self.con:
+            cur = self.con.cursor()
+            cur.execute("""
+            SELECT * FROM bets
+            ORDER BY date;
+            """)
+            bets_data = cur.fetchall()
+            return bets_data
+            
+    def clear_bets(self):
+        with self.con:
+            cur = self.con.cursor()
+            cur.execute("""
+            DELETE FROM bets;
+            """)
+                
 
 if __name__ == "__main__":
     channel = "testchannel"

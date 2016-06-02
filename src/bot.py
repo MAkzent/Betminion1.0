@@ -112,9 +112,14 @@ class Roboraj(object):
                     username = message_dict['username']
                 elif self.irc.check_for_whisper(data):
                     message_dict = self.irc.get_whisper(data)
-                    channel = self.irc.config["channels"][0]
+                    channel = self.config["channels"][0]
                     message = message_dict['message']
                     username = message_dict['username']
+                    if message.startswith("!"):
+                        resp = '/w %s Please type your command in the channel chat' % (username)
+                        pbot(resp, channel)
+                        self.irc.send_message(channel, resp)
+                    continue
                 else:
                     continue
                 globals.CURRENT_CHANNEL = channel.lstrip('#')
@@ -178,19 +183,12 @@ class Roboraj(object):
             return
         # if there's a required userlevel, validate it.
         if commands.check_has_ul(username, command):
-            user_data, __ = twitch.get_dict_for_users(channel)
-            try:
-                if username not in user_data["chatters"]["moderators"]:
-                    resp = '/w %s %s' % (
-                        username, "This is a moderator-only command!")
-                    pbot(resp, channel)
-                    self.irc.send_message(channel, resp)
-                    return
-            except Exception as error:
-                with open("errors.txt", "a") as f:
-                    error_message = "{0} | {1} : {2}\n{3}\n{4}".format(
-                        username, channel, command, user_data, error)
-                    f.write(error_message)
+            if username.lower() != self.config["username"].lower():
+                resp = '/w %s %s' % (
+                    username, "This is a moderator-only command!")
+                pbot(resp, channel)
+                self.irc.send_message(channel, resp)
+                return
         result = commands.pass_to_function(command, args)
         commands.update_last_used(command, channel)
         if result:
