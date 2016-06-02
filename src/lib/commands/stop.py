@@ -8,7 +8,7 @@ def stop():
     db = Database()
     bets = db.are_bets(channel)[0]
     if bets:
-        delay = 3
+        delay = 30
         initialize(chan, delay)
         
     else:
