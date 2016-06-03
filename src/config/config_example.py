@@ -3,6 +3,7 @@ global config
 username = 'YOURUSERNAME'
 oauth_password = 'oauth:6yc3lsd1ho0jmw52vr58udcy2mqe32'
 channels_to_join = ['#CHANNELTOJOIN']
+mods = ["MOD"]
 
 for channel in channels_to_join:
     channel = channel.lstrip('#')
@@ -19,4 +20,5 @@ config = {
     'log_messages': True,
 
     'channels': channels_to_join,
+    'mods': mods
 }

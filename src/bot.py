@@ -183,7 +183,7 @@ class Roboraj(object):
             return
         # if there's a required userlevel, validate it.
         if commands.check_has_ul(username, command):
-            if username.lower() != self.config["username"].lower():
+            if username.lower() not in self.config["mods"]:
                 resp = '/w %s %s' % (
                     username, "This is a moderator-only command!")
                 pbot(resp, channel)
